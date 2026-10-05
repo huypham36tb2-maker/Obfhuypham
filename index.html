@@ -3,33 +3,1464 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Huy Pham Obf</title>
-<style>html,body{margin:0;padding:0;background:#06070d;color:#eaf0ff;font-family:system-ui;min-height:100vh}#hp-load{display:flex;align-items:center;justify-content:center;min-height:100vh;font-size:14px;color:#8f9bc0}</style>
+<title>Huy Pham Obf Studio v2 Pro</title>
+<style>
+  :root{
+    --bg-0:#06070d; --bg-1:#0a0d1a; --card:rgba(18,22,45,.72);
+    --line:rgba(120,140,255,.18); --txt:#eaf0ff; --muted:#8f9bc0;
+    --accent:#7c5cff; --accent-2:#22e0c8; --accent-3:#ff7ab6;
+    --ok:#5ee7a8; --err:#ff6b81; --warn:#ffb86b;
+    --shadow:0 24px 70px rgba(0,0,0,.5);
+  }
+  html[data-theme="light"]{
+    --bg-0:#f4f6fb; --bg-1:#e8ecf7; --card:rgba(255,255,255,.85);
+    --line:rgba(80,100,200,.22); --txt:#0f1530; --muted:#5a6488;
+    --shadow:0 20px 50px rgba(80,100,180,.15);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Segoe UI",system-ui,sans-serif;
+    background:
+      radial-gradient(900px 500px at 12% -10%, rgba(124,92,255,.22), transparent 60%),
+      radial-gradient(700px 400px at 90% 0%, rgba(34,224,200,.14), transparent 60%),
+      radial-gradient(700px 500px at 50% 110%, rgba(255,122,182,.12), transparent 60%),
+      linear-gradient(160deg,var(--bg-0),var(--bg-1) 55%,#04050a);
+    color:var(--txt);min-height:100vh;padding:22px;overflow-x:hidden;
+    transition:background .3s,color .3s;
+  }
+  html[data-theme="light"] body{
+    background:
+      radial-gradient(900px 500px at 12% -10%, rgba(124,92,255,.15), transparent 60%),
+      radial-gradient(700px 400px at 90% 0%, rgba(34,224,200,.12), transparent 60%),
+      linear-gradient(160deg,var(--bg-0),var(--bg-1) 55%,#dde3f2);
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+    background-image:
+      linear-gradient(rgba(120,140,255,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(120,140,255,.05) 1px,transparent 1px);
+    background-size:46px 46px,46px 46px;
+    mask-image:radial-gradient(circle at 50% 40%,#000 40%,transparent 85%);
+    -webkit-mask-image:radial-gradient(circle at 50% 40%,#000 40%,transparent 85%);
+  }
+  .wrap{max-width:1120px;margin:0 auto}
+
+  /* Header */
+  header{
+    position:relative;text-align:center;padding:30px 20px 22px;margin-bottom:20px;
+    border:1px solid var(--line);border-radius:22px;
+    background:linear-gradient(180deg,rgba(20,24,48,.65),rgba(10,13,28,.55));
+    box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.04);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);overflow:hidden;
+  }
+  html[data-theme="light"] header{
+    background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(240,244,255,.6));
+  }
+  header h1{
+    font-size:clamp(24px,4.4vw,40px);letter-spacing:-.6px;
+    background:linear-gradient(90deg,#fff 0%,#b6a5ff 40%,#22e0c8 75%,#ff7ab6 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  html[data-theme="light"] header h1{
+    background:linear-gradient(90deg,#7c5cff,#22a8c8 60%,#ff5a9e);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  header p{color:var(--muted);margin-top:8px;font-size:13px}
+  .badges{margin-top:12px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+  .badge{font-size:11px;padding:5px 10px;border-radius:999px;
+    background:rgba(30,36,70,.7);border:1px solid var(--line);color:#c5cef0}
+  html[data-theme="light"] .badge{background:rgba(255,255,255,.7);color:#3b4670}
+  .owner{
+    display:inline-flex;align-items:center;gap:6px;margin-top:12px;
+    padding:6px 14px;border-radius:999px;
+    background:linear-gradient(90deg,rgba(124,92,255,.18),rgba(34,224,200,.14));
+    border:1px solid rgba(124,92,255,.35);color:#e6dcff;font-size:12.5px;
+    box-shadow:0 0 22px rgba(124,92,255,.15);
+  }
+  html[data-theme="light"] .owner{color:#4a3a8f}
+
+  /* Top bar (theme + shortcuts hint) */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:14px;gap:10px;flex-wrap:wrap;
+  }
+  .topbar .left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .topbar .right{display:flex;gap:8px;align-items:center}
+  .pill{
+    font-size:11.5px;padding:6px 12px;border-radius:999px;
+    background:rgba(30,36,70,.7);border:1px solid var(--line);color:var(--muted);
+  }
+  .iconbtn{
+    width:38px;height:38px;border-radius:11px;
+    background:rgba(30,36,70,.7);border:1px solid var(--line);
+    color:var(--txt);cursor:pointer;font-size:16px;
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:.18s;
+  }
+  .iconbtn:hover{background:rgba(44,52,92,.9);border-color:rgba(124,92,255,.5)}
+
+  /* Tabs */
+  .tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+  .tabs button{
+    padding:10px 18px;font-size:13px;font-weight:700;
+    background:rgba(18,22,45,.7);color:var(--muted);
+    border:1px solid var(--line);border-radius:11px;cursor:pointer;
+    transition:.18s;
+  }
+  .tabs button.active{
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    color:#06080f;border-color:transparent;
+    box-shadow:0 8px 22px rgba(124,92,255,.28);
+  }
+  .tabpane{display:none}
+  .tabpane.active{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  /* Card */
+  .card{
+    background:linear-gradient(160deg,var(--card),rgba(9,12,26,.7));
+    border:1px solid var(--line);border-radius:18px;padding:20px;
+    margin-bottom:16px;box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.03);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  }
+  html[data-theme="light"] .card{
+    background:linear-gradient(160deg,rgba(255,255,255,.9),rgba(240,244,255,.7));
+  }
+  label{display:block;font-size:12.5px;color:var(--muted);margin:12px 0 6px;font-weight:600}
+  textarea,input[type=text],select{
+    width:100%;background:rgba(3,6,16,.78);color:var(--txt);
+    border:1px solid var(--line);border-radius:11px;padding:11px 12px;
+    font-family:Consolas,"JetBrains Mono",monospace;font-size:13px;outline:none;transition:.18s;
+  }
+  html[data-theme="light"] textarea,html[data-theme="light"] input[type=text],html[data-theme="light"] select{
+    background:rgba(255,255,255,.85);
+  }
+  textarea:focus,input[type=text]:focus,select:focus{
+    border-color:rgba(124,92,255,.75);
+    box-shadow:0 0 0 3px rgba(124,92,255,.15);
+  }
+  textarea{min-height:180px;resize:vertical;line-height:1.55}
+  input[type=file]{
+    width:100%;padding:9px;border:1px dashed rgba(120,140,255,.28);
+    border-radius:11px;background:rgba(3,6,16,.5);color:var(--muted);font-size:13px;
+  }
+  input[type=file]::file-selector-button{
+    background:linear-gradient(90deg,var(--accent),#5a44d8);color:#fff;
+    border:none;padding:8px 14px;border-radius:8px;margin-right:10px;
+    cursor:pointer;font-weight:700;font-size:12.5px;
+  }
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .row>div{flex:1;min-width:160px}
+
+  /* Presets */
+  .preset{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:10px}
+  .preset button{
+    text-align:left;min-height:74px;padding:12px;color:var(--txt);font-weight:600;
+    background:rgba(18,22,45,.7);border:1px solid rgba(120,140,255,.15);
+    border-radius:14px;cursor:pointer;transition:.18s;
+  }
+  .preset button:hover{transform:translateY(-2px);border-color:rgba(124,92,255,.4)}
+  .preset button.active{
+    border-color:rgba(34,224,200,.7);
+    background:linear-gradient(160deg,rgba(124,92,255,.22),rgba(34,224,200,.12));
+    box-shadow:0 0 0 2px rgba(34,224,200,.12),0 0 24px rgba(34,224,200,.12);
+  }
+  .preset strong{display:block;font-size:12.5px}
+  .preset small{display:block;color:var(--muted);margin-top:4px;font-weight:500;font-size:11px}
+
+  /* Buttons */
+  button.go{
+    width:100%;margin-top:16px;font-size:15px;padding:14px;
+    background:linear-gradient(100deg,var(--accent) 0%,var(--accent-2) 55%,var(--accent-3) 100%);
+    color:#06080f;font-weight:800;letter-spacing:.3px;border:none;border-radius:12px;
+    cursor:pointer;box-shadow:0 12px 34px rgba(124,92,255,.28);transition:.18s;
+  }
+  button.go:hover{filter:brightness(1.08);transform:translateY(-1px)}
+  button.ghost{
+    padding:10px 15px;font-size:12.5px;font-weight:700;
+    background:rgba(28,34,64,.75);color:var(--txt);
+    border:1px solid var(--line);border-radius:10px;cursor:pointer;transition:.18s;
+  }
+  html[data-theme="light"] button.ghost{background:rgba(240,244,255,.9)}
+  button.ghost:hover{background:rgba(44,52,92,.9);border-color:rgba(124,92,255,.5)}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+  .msg{margin-top:8px;font-size:12.5px;color:var(--muted);min-height:16px}
+  .msg.ok{color:var(--ok)} .msg.err{color:var(--err)} .msg.warn{color:var(--warn)}
+
+  .langs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .langs button{
+    padding:8px 14px;font-size:12.5px;font-weight:700;
+    background:rgba(18,22,45,.7);color:var(--muted);
+    border:1px solid var(--line);border-radius:999px;cursor:pointer;transition:.18s;
+  }
+  .langs button:hover{border-color:rgba(124,92,255,.5)}
+  .langs button.active{
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    color:#06080f;border-color:transparent;box-shadow:0 0 18px rgba(124,92,255,.3);
+  }
+
+  /* History */
+  .hist{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto;margin-top:6px}
+  .hist .item{
+    display:flex;justify-content:space-between;align-items:center;gap:8px;
+    padding:8px 10px;border-radius:10px;
+    background:rgba(18,22,45,.6);border:1px solid var(--line);font-size:12px;
+  }
+  .hist .item:hover{border-color:rgba(124,92,255,.4)}
+  .hist .item .meta{color:var(--muted);font-size:11px}
+  .hist .item button{
+    font-size:11px;padding:5px 10px;background:rgba(124,92,255,.18);
+    border:1px solid rgba(124,92,255,.3);color:#d9d0ff;border-radius:7px;
+    cursor:pointer;font-weight:600;
+  }
+  .hist .item button:hover{background:rgba(124,92,255,.35)}
+
+  /* Size bar */
+  .sizebar{margin-top:10px;font-size:12px;color:var(--muted)}
+  .sizebar .bar{height:8px;background:rgba(120,140,255,.15);border-radius:6px;overflow:hidden;margin-top:6px;display:flex}
+  .sizebar .bar .g{background:linear-gradient(90deg,#5ee7a8,#22e0c8)}
+  .sizebar .bar .o{background:linear-gradient(90deg,#ff7ab6,#ffb86b)}
+  .sizebar .legend{display:flex;gap:14px;margin-top:6px}
+  .sizebar .legend span::before{
+    content:"●";margin-right:5px;
+  }
+  .sizebar .legend .g::before{color:#5ee7a8}
+  .sizebar .legend .o::before{color:#ff7ab6}
+
+  /* Info grid */
+  .infoGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12.5px;margin-top:8px}
+  .infoGrid .cell{padding:10px 12px;border-radius:10px;background:rgba(18,22,45,.6);border:1px solid var(--line)}
+  .infoGrid .cell b{color:#c5cef0;display:block;font-size:11.5px;margin-bottom:3px}
+  .infoGrid .cell span{color:var(--txt);font-family:Consolas,monospace;word-break:break-all}
+
+  /* Sample dropdown */
+  .samples{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .samples button{
+    font-size:11.5px;padding:6px 11px;border-radius:999px;
+    background:rgba(34,224,200,.12);color:#a8f4e4;
+    border:1px solid rgba(34,224,200,.3);cursor:pointer;font-weight:600;
+  }
+  .samples button:hover{background:rgba(34,224,200,.22)}
+
+  footer{text-align:center;color:var(--muted);font-size:12px;margin:24px 0 10px;line-height:1.7}
+
+  @media(max-width:900px){ .preset{grid-template-columns:repeat(3,1fr)} }
+  @media(max-width:760px){
+    body{padding:12px}
+    .preset{grid-template-columns:repeat(2,1fr)}
+    .card{padding:16px}
+    .infoGrid{grid-template-columns:1fr}
+  }
+  @media(max-width:430px){ .preset{grid-template-columns:1fr} }
+</style>
 </head>
 <body>
-<div id="hp-load">Đang giải mã...</div>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="left">
+      <span class="pill">⌨️ Ctrl+Enter: OBF • Ctrl+S: Tải • Ctrl+K: Xoá</span>
+    </div>
+    <div class="right">
+      <button class="iconbtn" id="themeBtn" title="Đổi theme">🌙</button>
+    </div>
+  </div>
+
+  <header>
+    <h1>⚡ Huy Pham Obf Studio v2 Pro</h1>
+    <p>Obfuscate &amp; Deobfuscate: Python • Lua • JavaScript • HTML — Offline 100%</p>
+    <div class="owner">👑 Owner: <b>Huy Pham</b></div>
+    <div class="badges">
+      <span class="badge">🛡️ Anti-tamper SHA-256</span>
+      <span class="badge">⏰ Expiry</span>
+      <span class="badge">🧬 4 ngôn ngữ</span>
+      <span class="badge">🔓 Deobf</span>
+      <span class="badge">💾 History</span>
+      <span class="badge">📱 PWA-ready</span>
+    </div>
+  </header>
+
+  <div class="tabs" id="tabs">
+    <button type="button" data-tab="obf" class="active">🔐 Obfuscate</button>
+    <button type="button" data-tab="deobf">🔓 Deobfuscate</button>
+    <button type="button" data-tab="hist">💾 Lịch sử</button>
+    <button type="button" data-tab="help">📖 Hướng dẫn</button>
+  </div>
+
+  <!-- ============ TAB OBF ============ -->
+  <div class="tabpane active" id="pane-obf">
+
+    <div class="card">
+      <label for="filein">📎 Nạp file (.py / .lua / .js / .html)</label>
+      <input type="file" id="filein" accept=".py,.lua,.js,.html,.txt,text/plain">
+
+      <label for="input">📝 CODE CẦN OBF</label>
+      <textarea id="input" placeholder="Dán code vào đây..."></textarea>
+      <div class="samples" id="samples">
+        <button type="button" data-lang="python">🐍 Sample Python</button>
+        <button type="button" data-lang="lua">🌙 Sample Lua</button>
+        <button type="button" data-lang="js">🟨 Sample JS</button>
+        <button type="button" data-lang="html">🌐 Sample HTML</button>
+      </div>
+
+      <label>🧩 Ngôn ngữ</label>
+      <div class="langs" id="langs">
+        <button type="button" data-lang="python" class="active">🐍 Python</button>
+        <button type="button" data-lang="lua">🌙 Lua</button>
+        <button type="button" data-lang="js">🟨 JavaScript</button>
+        <button type="button" data-lang="html">🌐 HTML</button>
+      </div>
+
+      <div style="margin-top:14px;">
+        <div style="font-size:14px;font-weight:750">🎛️ Preset</div>
+        <div style="color:var(--muted);font-size:11.8px;margin-top:4px">Chọn mức độ obfuscate — có thể chỉnh thêm bên dưới.</div>
+        <div class="preset" id="presets">
+          <button type="button" data-preset="balanced" class="active">
+            <strong>🌌 Balanced</strong><small>Ổn định • 3 lớp</small>
+          </button>
+          <button type="button" data-preset="compact">
+            <strong>⚡ Compact</strong><small>Gọn • 1 lớp</small>
+          </button>
+          <button type="button" data-preset="deep">
+            <strong>🛡️ Deep Wrap</strong><small>Nặng • 8 lớp</small>
+          </button>
+          <button type="button" data-preset="unicode">
+            <strong>🪐 Unicode</strong><small>5 lớp • Unicode</small>
+          </button>
+          <button type="button" data-preset="paranoid">
+            <strong>💀 Paranoid</strong><small>10 lớp + AT</small>
+          </button>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:12px;">
+        <div>
+          <label for="layers">Số lớp bọc</label>
+          <select id="layers">
+            <option>1</option><option>2</option><option selected>3</option>
+            <option>4</option><option>5</option><option>6</option>
+            <option>7</option><option>8</option><option>9</option><option>10</option>
+          </select>
+        </div>
+        <div>
+          <label for="pyver">Python version</label>
+          <select id="pyver">
+            <option value="any" selected>Bất kỳ</option>
+            <option value="3.8">3.8</option><option value="3.9">3.9</option>
+            <option value="3.10">3.10</option><option value="3.11">3.11</option>
+            <option value="3.12">3.12</option><option value="3.13">3.13</option>
+          </select>
+        </div>
+        <div>
+          <label for="tag">Đóng dấu tác giả</label>
+          <input type="text" id="tag" placeholder="VD: Huy Pham">
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:4px;">
+        <div>
+          <label for="expiry">⏰ Hết hạn (tuỳ chọn)</label>
+          <input type="date" id="expiry">
+        </div>
+        <div>
+          <label for="antiTamper">🛡️ Anti-tamper</label>
+          <select id="antiTamper">
+            <option value="off" selected>Tắt</option>
+            <option value="on">Bật (SHA-256)</option>
+          </select>
+        </div>
+        <div>
+          <label for="antiDebug">🔍 Anti-debug (JS)</label>
+          <select id="antiDebug">
+            <option value="off" selected>Tắt</option>
+            <option value="on">Bật (chỉ JS)</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="go" id="go">🔐 OBFUSCATE NGAY</button>
+      <div class="msg" id="tb"></div>
+    </div>
+
+    <div class="card">
+      <label for="output">📦 KẾT QUẢ</label>
+      <textarea id="output" readonly placeholder="Kết quả sẽ hiện ở đây..."></textarea>
+      <div class="msg" id="stat"></div>
+      <div class="sizebar" id="sizebar" style="display:none">
+        <div class="legend"><span class="g">Gốc</span><span class="o">Obf</span></div>
+        <div class="bar"><div class="g" id="barG"></div><div class="o" id="barO"></div></div>
+      </div>
+      <div class="actions">
+        <button class="ghost" id="copy">📋 Sao chép</button>
+        <button class="ghost" id="download">⬇️ Tải file</button>
+        <button class="ghost" id="dlSelf">📦 Tải .html tự chứa</button>
+        <button class="ghost" id="copyDataURI">🔗 Copy Data URI</button>
+        <button class="ghost" id="copyMD">📝 Copy Markdown link</button>
+        <button class="ghost" id="verifyBtn">🔎 Verify</button>
+        <button class="ghost" id="clear">🧹 Xoá hết</button>
+      </div>
+      <div class="infoGrid" id="infoGrid" style="display:none">
+        <div class="cell"><b>Ngôn ngữ</b><span id="ifLang">—</span></div>
+        <div class="cell"><b>Mode</b><span id="ifMode">—</span></div>
+        <div class="cell"><b>Số lớp</b><span id="ifRounds">—</span></div>
+        <div class="cell"><b>Anti-tamper</b><span id="ifAT">—</span></div>
+        <div class="cell"><b>Hết hạn</b><span id="ifExp">—</span></div>
+        <div class="cell"><b>SHA-256 (gốc)</b><span id="ifHash">—</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ TAB DEOBF ============ -->
+  <div class="tabpane" id="pane-deobf">
+    <div class="card">
+      <label for="din">🔓 DÁN FILE OBF (từ Huy Pham Obf Studio)</label>
+      <textarea id="din" placeholder="Dán nội dung file obf vào đây..."></textarea>
+      <div class="actions" style="margin-top:10px">
+        <button class="ghost" id="dfileBtn">📎 Nạp file obf</button>
+        <input type="file" id="dfile" accept=".py,.lua,.js,.html,.txt" style="display:none">
+        <button class="ghost" id="dgo">🔓 GIẢI MÃ</button>
+      </div>
+      <div class="msg" id="dtb"></div>
+    </div>
+
+    <div class="card">
+      <label for="dout">📄 CODE GỐC (nếu decode được)</label>
+      <textarea id="dout" readonly placeholder="Kết quả giải mã..."></textarea>
+      <div class="actions">
+        <button class="ghost" id="dcopy">📋 Sao chép</button>
+        <button class="ghost" id="ddownload">⬇️ Tải file gốc</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB HISTORY ============ -->
+  <div class="tabpane" id="pane-hist">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:14px;font-weight:750">💾 Lịch sử obf (10 gần nhất)</div>
+        <button class="ghost" id="clearHist">🧹 Xoá lịch sử</button>
+      </div>
+      <div class="hist" id="histList"></div>
+    </div>
+  </div>
+
+  <!-- ============ TAB HELP ============ -->
+  <div class="tabpane" id="pane-help">
+    <div class="card">
+      <div style="font-size:15px;font-weight:750;margin-bottom:10px">📖 Hướng dẫn nhanh</div>
+      <ol style="padding-left:20px;line-height:1.85;font-size:13.5px;color:var(--txt)">
+        <li>Chọn tab <b>Obfuscate</b>, chọn <b>ngôn ngữ</b> (Python / Lua / JS / HTML).</li>
+        <li>Dán code hoặc bấm <b>Nạp file</b>.</li>
+        <li>Chọn <b>Preset</b> (Balanced / Compact / Deep / Unicode / Paranoid).</li>
+        <li>(Tuỳ chọn) Bật <b>Anti-tamper</b>, đặt <b>Expiry date</b>, nhập <b>tag tác giả</b>.</li>
+        <li>Bấm <b>🔐 OBFUSCATE NGAY</b> (hoặc Ctrl+Enter).</li>
+        <li>Copy / Tải file / Copy Data URI / Copy Markdown link.</li>
+      </ol>
+      <div style="font-size:14px;font-weight:750;margin:16px 0 8px">🌐 Chạy HTML obf trên GitHub</div>
+      <ul style="padding-left:20px;line-height:1.8;font-size:13px;color:var(--muted)">
+        <li><b>GitHub Pages</b>: bật Settings → Pages → Deploy from branch. File obf dùng iframe.srcdoc nên chạy mọi nơi.</li>
+        <li><b>Data URI</b>: bấm "Copy Data URI" rồi dán vào thanh địa chỉ browser là chạy ngay.</li>
+        <li><b>Markdown link</b>: bấm "Copy Markdown link" dán vào README GitHub → click là chạy.</li>
+        <li><b>htmlpreview.github.io</b>: dán raw URL của file obf.</li>
+      </ul>
+      <div style="font-size:14px;font-weight:750;margin:16px 0 8px">🛡️ Anti-tamper &amp; Expiry</div>
+      <ul style="padding-left:20px;line-height:1.8;font-size:13px;color:var(--muted)">
+        <li><b>Anti-tamper</b>: nhúng SHA-256 của code gốc. Nếu ai sửa file obf → tự raise lỗi, không chạy.</li>
+        <li><b>Expiry</b>: chỉ chạy trước ngày X, sau đó raise SystemExit / throw.</li>
+        <li>Lưu ý: đây vẫn là obfuscate, không phải mã hoá bảo mật thật.</li>
+      </ul>
+      <div style="font-size:14px;font-weight:750;margin:16px 0 8px">⌨️ Phím tắt</div>
+      <ul style="padding-left:20px;line-height:1.8;font-size:13px;color:var(--muted)">
+        <li><b>Ctrl+Enter</b>: chạy OBF</li>
+        <li><b>Ctrl+S</b>: tải file</li>
+        <li><b>Ctrl+K</b>: xoá hết</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    Huy Pham Obf Studio v2 Pro — Python • Lua • JavaScript • HTML<br>
+    Obfuscate chỉ để che mắt thường, không phải bảo mật tuyệt đối.
+  </footer>
+</div>
+
+<!-- ================= ENGINE ================= -->
 <script>
-/* Obfuscated by Huy Pham Obf Studio — Owner: Huy Pham | Mode: deflate+b64 */
-(function(){
-  'use strict';
-  var _c = ["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"];
-  function _b(s){
-    var bin = atob(s);
-    var u8 = new Uint8Array(bin.length);
-    for(var i=0;i<bin.length;i++) u8[i] = bin.charCodeAt(i);
-    return u8;
+/* ============ HELPERS ============ */
+function rndName(len, used){
+  len = len || 4;
+  for(;;){
+    var s = "_";
+    for(var i=0;i<len;i++) s += String.fromCharCode(0xAC00 + Math.floor(Math.random()*(0xD7A3-0xAC00)));
+    s += (10 + Math.floor(Math.random()*90));
+    if(!used[s]){ used[s]=1; return s; }
   }
-  var _u8 = _b(_c.join(''));
-  var ds = new DecompressionStream('deflate-raw');
-  var st = new Blob([_u8]).stream().pipeThrough(ds);
-  new Response(st).arrayBuffer().then(function(ab){
-    document.open();
-    document.write(new TextDecoder('utf-8').decode(new Uint8Array(ab)));
-    document.close();
-  }).catch(function(e){
-    document.getElementById('hp-load').textContent = 'Lỗi giải mã: ' + e.message;
+}
+function b64FromBytes(u8){
+  var s="",c=0x8000;
+  for(var i=0;i<u8.length;i+=c) s += String.fromCharCode.apply(null,u8.subarray(i,i+c));
+  return btoa(s);
+}
+function bytesFromB64(s){
+  var str=atob(s), u8=new Uint8Array(str.length);
+  for(var i=0;i<str.length;i++) u8[i]=str.charCodeAt(i);
+  return u8;
+}
+function deflateRaw(u8){
+  var cs = new CompressionStream("deflate-raw");
+  return new Response(new Blob([u8]).stream().pipeThrough(cs)).arrayBuffer()
+    .then(function(ab){ return new Uint8Array(ab); });
+}
+async function inflateRaw(u8){
+  var ds = new DecompressionStream("deflate-raw");
+  var st = new Blob([u8]).stream().pipeThrough(ds);
+  var ab = await new Response(st).arrayBuffer();
+  return new Uint8Array(ab);
+}
+function hasDeflate(){
+  try{ return typeof CompressionStream === "function" && !!new CompressionStream("deflate-raw"); }
+  catch(e){ return false; }
+}
+async function sha256Hex(str){
+  var buf = new TextEncoder().encode(str);
+  var h = await crypto.subtle.digest("SHA-256", buf);
+  return Array.from(new Uint8Array(h)).map(function(b){
+    return b.toString(16).padStart(2,"0");
+  }).join("");
+}
+function escPyStr(s){ return JSON.stringify(s); }
+
+/* ============ PYTHON ============ */
+function pyLiteral(u8){
+  var s = b64FromBytes(u8), parts=[], c=65536;
+  for(var i=0;i<s.length;i+=c) parts.push("b'"+s.slice(i,i+c)+"'");
+  return parts.length===1 ? parts[0] : "("+parts.join("\n    ")+")";
+}
+function pyLambdaConst(n, used){
+  var k = 111 + Math.floor(Math.random()*999872);
+  var v = rndName(2, used);
+  return "(lambda "+v+": ("+v+" ^ "+k+"))("+(n^k)+")";
+}
+function pyGuard(py, used){
+  if(!py || py==="any") return "";
+  var p = py.split("."), v = rndName(3, used);
+  return "import sys as "+v+"\n"+
+    "if "+v+".version_info[:2] != ("+p[0]+", "+p[1]+"):\n"+
+    "    raise SystemExit('[HuyPham] File nay chi chay tren Python "+py+"')\n";
+}
+function pyExpiry(dateStr, used){
+  if(!dateStr) return "";
+  var v = rndName(2, used);
+  return "import datetime as "+v+"\n"+
+    "if "+v+".datetime.now() > "+v+".datetime.fromisoformat('"+dateStr+"T23:59:59'):\n"+
+    "    raise SystemExit('[HuyPham] File da het han su dung.')\n";
+}
+function pyAntiTamper(hash, used){
+  if(!hash) return "";
+  var v1 = rndName(3, used), v2 = rndName(3, used);
+  // hash của code gốc — so sánh sau khi decode
+  return "import hashlib as "+v1+"\n"+
+    "if "+v1+".sha256("+v2+"_bytes).hexdigest() != '"+hash+"':\n"+
+    "    raise SystemExit('[HuyPham] File da bi chinh sua - tu choi chay!')\n";
+}
+async function obfPython(src, opts){
+  opts = opts || {};
+  var rounds = Math.min(10, Math.max(1, opts.rounds|0 || 3));
+  var py = opts.pyVersion || "any";
+  var tag = opts.tag || "Huy Pham";
+  var useDeflate = hasDeflate();
+  var used = {}, data = new TextEncoder().encode(src);
+  var originalHash = opts.antiTamper ? await sha256Hex(src) : null;
+
+  // save a copy of raw bytes for AT check (before compression loop)
+  // For AT we need the final decoded bytes to match src
+  var rawBytes = new TextEncoder().encode(src);
+
+  for(var i=0;i<rounds;i++){
+    if(useDeflate){
+      data = await deflateRaw(data);
+      if(i < rounds-1) data = new TextEncoder().encode(b64FromBytes(data));
+    } else if(i < rounds-1){
+      data = new TextEncoder().encode(b64FromBytes(data));
+    }
+  }
+  var vD = rndName(3, used), vB = rndName(3, used),
+      vZ = rndName(3, used), vI = rndName(2, used), vR = rndName(3, used);
+  var mode = useDeflate ? "deflate+b64" : "b64-only";
+
+  var header = "__OWN__ = "+escPyStr(tag)+"\n"+
+    "__OBF__ = 'Huy Pham Obf File'\n"+
+    "__AT__ = "+escPyStr(originalHash || "off")+"\n"+
+    "__EXP__ = "+escPyStr(opts.expiry || "off")+"\n";
+
+  var guard = pyGuard(py, used);
+  var exp = pyExpiry(opts.expiry, used);
+
+  var lines = [];
+  lines.push("#!/usr/bin/env python3");
+  lines.push("# -*- coding: utf-8 -*-");
+  lines.push(header + guard + exp);
+  lines.push("import base64 as "+vB + (useDeflate ? ", zlib as "+vZ : ""));
+  lines.push(vD + " = " + pyLiteral(data));
+  lines.push("for "+vI+" in range("+pyLambdaConst(rounds, used)+"):");
+  if(useDeflate){
+    lines.push("    "+vD+" = "+vZ+".decompress("+vB+".b64decode("+vD+"), -15)");
+  } else {
+    lines.push("    "+vD+" = "+vB+".b64decode("+vD+")");
+  }
+  lines.push(vR+"_bytes = "+vD);
+  if(originalHash){
+    lines.push("import hashlib as _hp_hash");
+    lines.push("if _hp_hash.sha256("+vR+"_bytes).hexdigest() != '"+originalHash+"':");
+    lines.push("    raise SystemExit('[HuyPham] File da bi chinh sua - tu choi chay!')");
+  }
+  lines.push("exec("+vR+"_bytes.decode('utf-8'))");
+
+  var stub = lines.join("\n")+"\n";
+  return { code: stub, lang:"python", mode: mode, rounds: rounds, py: py,
+           sizeGoc: src.length, sizeObf: stub.length,
+           hash: originalHash, at: !!originalHash, expiry: opts.expiry || null };
+}
+
+/* ============ LUA ============ */
+async function obfLua(src, opts){
+  opts = opts || {};
+  var useDeflate = hasDeflate();
+  var data = new TextEncoder().encode(src);
+  var mode;
+  if(useDeflate){ data = await deflateRaw(data); mode = "deflate+b64"; }
+  else { mode = "b64-only"; }
+  var b64 = b64FromBytes(data);
+  var chunks = [], c = 65536;
+  for(var i=0;i<b64.length;i+=c) chunks.push('"'+b64.slice(i,i+c)+'"');
+  var lit = chunks.length===1 ? chunks[0] : "("+chunks.join(" ..\n  ")+")";
+  var used = {};
+  var vD = rndName(3, used), vB = rndName(3, used), vZ = rndName(3, used),
+      vF = rndName(3, used), vHash = rndName(3, used);
+
+  var originalHash = opts.antiTamper ? await sha256Hex(src) : null;
+  var tag = opts.tag || "Huy Pham";
+
+  var L = [];
+  L.push("--[[ Huy Pham Obf Studio v2 | Owner: "+tag+" | Mode: "+mode+" ]]");
+  if(opts.expiry){
+    L.push("local _hp_t = os.time({year="+opts.expiry.split("-")[0]+
+      ", month="+parseInt(opts.expiry.split("-")[1],10)+
+      ", day="+parseInt(opts.expiry.split("-")[2],10)+", hour=23, min=59, sec=59})");
+    L.push("if os.time() > _hp_t then error('[HuyPham] File da het han') end");
+  }
+  if(originalHash){
+    L.push("-- Anti-tamper SHA-256: "+originalHash);
+  }
+  L.push("local "+vB+" = (function()");
+  L.push("  local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'");
+  L.push("  local function dec(s)");
+  L.push("    s = s:gsub('[^'..b..'=]', '')");
+  L.push("    return (s:gsub('.', function(x)");
+  L.push("      if x=='=' then return '' end");
+  L.push("      local r,f='',(b:find(x,1,true)-1)");
+  L.push("      for i=6,1,-1 do r=r..(f%2^i-f%2^(i-1)>0 and '1' or '0') end");
+  L.push("      return r");
+  L.push("    end):gsub('%d%d%d?%d?%d?%d?%d?%d?', function(x)");
+  L.push("      if #x~=8 then return '' end");
+  L.push("      local c=0");
+  L.push("      for i=1,8 do c=c+(x:sub(i,i)=='1' and 2^(8-i) or 0) end");
+  L.push("      return string.char(c)");
+  L.push("    end))");
+  L.push("  end");
+  L.push("  return dec");
+  L.push("end)()");
+  if(useDeflate){
+    L.push("-- Pure-Lua inflate (raw deflate)");
+    L.push("local "+vZ+" = (function()");
+    L.push("  local function inflate(data)");
+    L.push("    local pos, bitbuf, bitcnt = 1, 0, 0");
+    L.push("    local function getbits(n)");
+    L.push("      while bitcnt < n do");
+    L.push("        bitbuf = bitbuf + (data:byte(pos) or 0) * 2^bitcnt");
+    L.push("        pos = pos + 1; bitcnt = bitcnt + 8");
+    L.push("      end");
+    L.push("      local v = bitbuf % 2^n; bitbuf = math.floor(bitbuf / 2^n); bitcnt = bitcnt - n");
+    L.push("      return v");
+    L.push("    end");
+    L.push("    local function build(lens)");
+    L.push("      local max=0; for _,l in ipairs(lens) do if l>max then max=l end end");
+    L.push("      local bl_count={}; for i=0,max do bl_count[i]=0 end");
+    L.push("      for _,l in ipairs(lens) do bl_count[l]=bl_count[l]+1 end");
+    L.push("      local next_code={}; local code=0");
+    L.push("      for bits=1,max do code=(code+bl_count[bits-1])*2; next_code[bits]=code end");
+    L.push("      local t={}");
+    L.push("      for i,l in ipairs(lens) do");
+    L.push("        if l~=0 then t[next_code[l]]={bits=l,sym=i-1}; next_code[l]=next_code[l]+1 end");
+    L.push("      end");
+    L.push("      return t");
+    L.push("    end");
+    L.push("    local function decode(t)");
+    L.push("      local code=0");
+    L.push("      for bits=1,15 do");
+    L.push("        code = code*2 + getbits(1)");
+    L.push("        local e=t[code]; if e and e.bits==bits then return e.sym end");
+    L.push("      end");
+    L.push("    end");
+    L.push("    local out = {}");
+    L.push("    repeat");
+    L.push("      local bfinal = getbits(1); local btype = getbits(2)");
+    L.push("      if btype==0 then");
+    L.push("        bitbuf=0;bitcnt=0");
+    L.push("        local len = data:byte(pos) + data:byte(pos+1)*256; pos=pos+4");
+    L.push("        for i=1,len do out[#out+1]=string.char(data:byte(pos)); pos=pos+1 end");
+    L.push("      elseif btype==1 or btype==2 then");
+    L.push("        local lit_lens, dist_lens");
+    L.push("        if btype==1 then");
+    L.push("          lit_lens={}; for i=0,143 do lit_lens[i+1]=8 end");
+    L.push("          for i=144,255 do lit_lens[i+1]=9 end");
+    L.push("          for i=256,279 do lit_lens[i+1]=7 end");
+    L.push("          for i=280,287 do lit_lens[i+1]=8 end");
+    L.push("          dist_lens={}; for i=1,32 do dist_lens[i]=5 end");
+    L.push("        else");
+    L.push("          local hlit=getbits(5)+257; local hdist=getbits(5)+1; local hclen=getbits(4)+4");
+    L.push("          local order={16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15}");
+    L.push("          local cl_lens={}; for i=1,19 do cl_lens[i]=0 end");
+    L.push("          for i=1,hclen do cl_lens[order[i]+1]=getbits(3) end");
+    L.push("          local cl_t=build(cl_lens)");
+    L.push("          lit_lens={}; local i=1");
+    L.push("          while i<=hlit+hdist do");
+    L.push("            local sym=decode(cl_t)");
+    L.push("            if sym<16 then lit_lens[i]=sym; i=i+1");
+    L.push("            elseif sym==16 then local r=getbits(2)+3; local p=lit_lens[i-1]; for _=1,r do lit_lens[i]=p; i=i+1 end");
+    L.push("            elseif sym==17 then local r=getbits(3)+3; for _=1,r do lit_lens[i]=0; i=i+1 end");
+    L.push("            else local r=getbits(7)+11; for _=1,r do lit_lens[i]=0; i=i+1 end end");
+    L.push("          end");
+    L.push("          local dl={}; for i=1,hdist do dl[i]=lit_lens[hlit+i] end");
+    L.push("          lit_lens={unpack(lit_lens,1,hlit)}; dist_lens=dl");
+    L.push("        end");
+    L.push("        local lit_t=build(lit_lens); local dist_t=build(dist_lens)");
+    L.push("        local lb={3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258}");
+    L.push("        local le={0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0}");
+    L.push("        local db={1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577}");
+    L.push("        local de={0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13}");
+    L.push("        while true do");
+    L.push("          local sym=decode(lit_t)");
+    L.push("          if sym<256 then out[#out+1]=string.char(sym)");
+    L.push("          elseif sym==256 then break");
+    L.push("          else");
+    L.push("            local li=sym-256; local length=lb[li]+getbits(le[li])");
+    L.push("            local ds=decode(dist_t); local dist=db[ds+1]+getbits(de[ds+1])");
+    L.push("            local start=#out-dist+1");
+    L.push("            for i=1,length do out[#out+1]=out[start+i-1] end");
+    L.push("          end");
+    L.push("        end");
+    L.push("      end");
+    L.push("    until bfinal==1");
+    L.push("    return table.concat(out)");
+    L.push("  end");
+    L.push("  return inflate");
+    L.push("end)()");
+  }
+  L.push("local "+vD+" = "+lit);
+  if(useDeflate){
+    L.push("local "+vF+" = "+vZ+"("+vB+"("+vD+"))");
+  } else {
+    L.push("local "+vF+" = "+vB+"("+vD+")");
+  }
+  L.push("local _ENV = _ENV or _G; load("+vF+", 'HuyPhamObf')()");
+  var stub = L.join("\n")+"\n";
+  return { code: stub, lang:"lua", mode: mode,
+           sizeGoc: src.length, sizeObf: stub.length,
+           hash: originalHash, at: !!originalHash, expiry: opts.expiry || null };
+}
+
+/* ============ JS ============ */
+async function obfJS(src, opts){
+  opts = opts || {};
+  var useDeflate = hasDeflate();
+  var data = new TextEncoder().encode(src);
+  var mode;
+  if(useDeflate){ data = await deflateRaw(data); mode = "deflate+b64"; }
+  else { mode = "b64-only"; }
+  var b64 = b64FromBytes(data);
+  var esc = b64.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+  var chunks = [], c = 65536;
+  for(var i=0;i<esc.length;i+=c) chunks.push("'"+esc.slice(i,i+c)+"'");
+  var lit = chunks.join("+\n  ");
+  var tag = opts.tag || "Huy Pham";
+  var originalHash = opts.antiTamper ? await sha256Hex(src) : null;
+
+  var L = [];
+  L.push("/* Obfuscated by Huy Pham Obf Studio v2 | Owner: "+tag+" | Mode: "+mode+" */");
+  L.push("(function(){");
+  L.push("  'use strict';");
+  if(opts.expiry){
+    L.push("  var _hp_exp = new Date('"+opts.expiry+"T23:59:59').getTime();");
+    L.push("  if(Date.now() > _hp_exp){ throw new Error('[HuyPham] File da het han'); }");
+  }
+  if(opts.antiDebug === "on"){
+    L.push("  (function(){");
+    L.push("    var _t = function(){ debugger; };");
+    L.push("    setInterval(_t, 1500);");
+    L.push("  })();");
+  }
+  L.push("  var _d = " + lit + ";");
+  L.push("  function _b(s){");
+  L.push("    if(typeof atob === 'function'){");
+  L.push("      var bin = atob(s);");
+  L.push("      var u8 = new Uint8Array(bin.length);");
+  L.push("      for(var i=0;i<bin.length;i++) u8[i] = bin.charCodeAt(i);");
+  L.push("      return u8;");
+  L.push("    }");
+  L.push("    return new Uint8Array(Buffer.from(s, 'base64'));");
+  L.push("  }");
+  if(useDeflate){
+    L.push("  async function _i(u8){");
+    L.push("    if(typeof DecompressionStream === 'function'){");
+    L.push("      var ds = new DecompressionStream('deflate-raw');");
+    L.push("      var st = new Blob([u8]).stream().pipeThrough(ds);");
+    L.push("      return new Uint8Array(await new Response(st).arrayBuffer());");
+    L.push("    }");
+    L.push("    var zlib = require('zlib');");
+    L.push("    return new Uint8Array(zlib.inflateRawSync(Buffer.from(u8)));");
+    L.push("  }");
+    L.push("  _i(_b(_d)).then(function(u8){");
+  } else {
+    L.push("  (function(u8){");
+  }
+  if(originalHash){
+    L.push("    if(typeof crypto !== 'undefined' && crypto.subtle){");
+    L.push("      crypto.subtle.digest('SHA-256', u8).then(function(h){");
+    L.push("        var hex = Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');");
+    L.push("        if(hex !== '"+originalHash+"'){ throw new Error('[HuyPham] File da bi chinh sua'); }");
+    L.push("        var code = new TextDecoder('utf-8').decode(u8);");
+    L.push("        (new Function(code)).call(this);");
+    L.push("      }).catch(function(e){ console.error('[HuyPham Obf]', e); });");
+    L.push("    } else {");
+    L.push("      var code = new TextDecoder('utf-8').decode(u8);");
+    L.push("      (new Function(code)).call(this);");
+    L.push("    }");
+  } else {
+    L.push("    var code = new TextDecoder('utf-8').decode(u8);");
+    L.push("    (new Function(code)).call(this);");
+  }
+  if(useDeflate){
+    L.push("  }).catch(function(e){ console.error('[HuyPham Obf]', e); });");
+  } else {
+    L.push("  })(_b(_d));");
+  }
+  L.push("}).call(this);");
+  var stub = L.join("\n")+"\n";
+  return { code: stub, lang:"js", mode: mode,
+           sizeGoc: src.length, sizeObf: stub.length,
+           hash: originalHash, at: !!originalHash, expiry: opts.expiry || null };
+}
+
+/* ============ HTML ============ */
+async function obfHTML(src, opts){
+  opts = opts || {};
+  var useDeflate = hasDeflate();
+  var data = new TextEncoder().encode(src);
+  var mode;
+  if(useDeflate){ data = await deflateRaw(data); mode = "deflate+b64"; }
+  else { mode = "b64-only"; }
+  var b64 = b64FromBytes(data);
+  var chunks = [], c = 65536;
+  for(var i=0;i<b64.length;i+=c) chunks.push(b64.slice(i,i+c));
+  var lit = JSON.stringify(chunks);
+  var tag = opts.tag || "Huy Pham";
+  var originalHash = opts.antiTamper ? await sha256Hex(src) : null;
+
+  var L = [];
+  L.push("<!DOCTYPE html>");
+  L.push("<html lang=\"vi\">");
+  L.push("<head>");
+  L.push("<meta charset=\"UTF-8\">");
+  L.push("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+  L.push("<title>Huy Pham Obf</title>");
+  L.push("<style>html,body{margin:0;padding:0;background:#06070d;color:#eaf0ff;font-family:system-ui;min-height:100vh;overflow:hidden}#hp-load{display:flex;align-items:center;justify-content:center;min-height:100vh;font-size:14px;color:#8f9bc0}#hp-frame{position:fixed;inset:0;width:100%;height:100%;border:0;display:none}</style>");
+  L.push("</head>");
+  L.push("<body>");
+  L.push("<div id=\"hp-load\">Đang giải mã...</div>");
+  L.push("<iframe id=\"hp-frame\" sandbox=\"allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox\"></iframe>");
+  L.push("<script>");
+  L.push("/* Obfuscated by Huy Pham Obf Studio v2 — Owner: "+tag+" | Mode: "+mode+" */");
+  L.push("(function(){");
+  L.push("  'use strict';");
+  if(opts.expiry){
+    L.push("  var _hp_exp = new Date('"+opts.expiry+"T23:59:59').getTime();");
+    L.push("  if(Date.now() > _hp_exp){ document.getElementById('hp-load').textContent = 'File da het han.'; return; }");
+  }
+  L.push("  var _c = " + lit + ";");
+  L.push("  function _b(s){");
+  L.push("    var bin = atob(s);");
+  L.push("    var u8 = new Uint8Array(bin.length);");
+  L.push("    for(var i=0;i<bin.length;i++) u8[i] = bin.charCodeAt(i);");
+  L.push("    return u8;");
+  L.push("  }");
+  L.push("  var _u8 = _b(_c.join(''));");
+  if(useDeflate){
+    L.push("  var ds = new DecompressionStream('deflate-raw');");
+    L.push("  var st = new Blob([_u8]).stream().pipeThrough(ds);");
+    L.push("  new Response(st).arrayBuffer().then(function(ab){");
+    L.push("    var u8 = new Uint8Array(ab);");
+    if(originalHash){
+      L.push("    if(crypto.subtle){");
+      L.push("      crypto.subtle.digest('SHA-256', u8).then(function(h){");
+      L.push("        var hex = Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');");
+      L.push("        if(hex !== '"+originalHash+"'){ document.getElementById('hp-load').textContent = 'File da bi chinh sua.'; return; }");
+      L.push("        _render(u8);");
+      L.push("      });");
+      L.push("    } else { _render(u8); }");
+      L.push("  }).catch(function(e){");
+      L.push("    document.getElementById('hp-load').textContent = 'Lỗi giải mã: ' + e.message;");
+      L.push("  });");
+    } else {
+      L.push("    _render(u8);");
+      L.push("  }).catch(function(e){");
+      L.push("    document.getElementById('hp-load').textContent = 'Lỗi giải mã: ' + e.message;");
+      L.push("  });");
+    }
+  } else {
+    L.push("  _render(_u8);");
+  }
+  L.push("  function _render(u8){");
+  L.push("    var html = new TextDecoder('utf-8').decode(u8);");
+  L.push("    var f = document.getElementById('hp-frame');");
+  L.push("    document.getElementById('hp-load').style.display='none';");
+  L.push("    f.style.display='block';");
+  L.push("    f.srcdoc = html;");
+  L.push("  }");
+  L.push("})();");
+  L.push("</"+"script>");
+  L.push("</body>");
+  L.push("</html>");
+  var stub = L.join("\n")+"\n";
+  return { code: stub, lang:"html", mode: mode,
+           sizeGoc: src.length, sizeObf: stub.length,
+           hash: originalHash, at: !!originalHash, expiry: opts.expiry || null };
+}
+
+/* ============ DISPATCH ============ */
+async function obfuscate(src, lang, opts){
+  if(lang === "python") return obfPython(src, opts);
+  if(lang === "lua")    return obfLua(src, opts);
+  if(lang === "js")     return obfJS(src, opts);
+  if(lang === "html")   return obfHTML(src, opts);
+  throw new Error("Ngôn ngữ không hỗ trợ: " + lang);
+}
+
+/* ============ DEOBFUSCATE ============ */
+function detectLang(code){
+  var c = code.trim();
+  if(c.startsWith("<!DOCTYPE") || c.startsWith("<html")) return "html";
+  if(c.indexOf("__OBF__ = 'Huy Pham Obf File'") >= 0 ||
+     (c.indexOf("#!/usr/bin/env python3") >= 0 && c.indexOf("b64decode") >= 0)) return "python";
+  if(c.indexOf("Huy Pham Obf Studio v2") >= 0 && c.indexOf("local ") >= 0 && c.indexOf("b64") >= 0) return "lua";
+  if(c.indexOf("Huy Pham Obf Studio v2") >= 0 && c.indexOf("function") >= 0 && c.indexOf("atob") >= 0) return "js";
+  // heuristics fallback
+  if(c.indexOf("def ") >= 0 || c.indexOf("import ") >= 0) return "python";
+  if(c.indexOf("local function") >= 0 || c.indexOf("function ") >= 0 && c.indexOf("end") >= 0) return "lua";
+  if(c.indexOf("var ") >= 0 || c.indexOf("const ") >= 0 || c.indexOf("=>") >= 0) return "js";
+  return "unknown";
+}
+
+async function extractPythonStub(code){
+  // Tìm literal bytes và rounds — parse bằng regex đơn giản
+  // Các tên biến là Unicode nên regex dựa vào "= (b'...')" hoặc "= (b'...'\n    b'...')"
+  // Cách chắc nhất: tìm b'...' blocks cuối cùng trước "for " loop
+  var forIdx = code.indexOf(" in range(");
+  if(forIdx < 0) throw new Error("Không tìm thấy vòng lặp giải mã.");
+  var eqIdx = code.lastIndexOf("=", forIdx);
+  var before = code.slice(eqIdx+1, forIdx);
+  // thu thập b'...'
+  var parts = [];
+  var re = /b'([A-Za-z0-9+/=]+)'/g, m;
+  while((m = re.exec(before)) !== null) parts.push(m[1]);
+  if(!parts.length) throw new Error("Không tìm thấy dữ liệu base64.");
+  var b64 = parts.join("");
+
+  // detect rounds
+  var roundMatch = before.match(/\(lambda\s+([^:]+):\s*\([^)]+\)\)\((\d+)\)/) ||
+                   code.slice(forIdx).match(/range\(\(lambda\s+[^)]+\)\((\d+)\)\)/);
+  // fallback: tìm số trong lambda phía sau "range("
+  var afterRange = code.slice(forIdx);
+  var numMatch = afterRange.match(/range\((?:\(lambda[^)]+\)\()?(\d+)/);
+  var rounds = numMatch ? parseInt(numMatch[1],10) : 1;
+  var useDeflate = code.indexOf(".decompress(") >= 0;
+
+  var data = bytesFromB64(b64);
+  for(var i=0;i<rounds;i++){
+    if(useDeflate){
+      data = await inflateRaw(data);
+      if(i < rounds-1) data = bytesFromB64(new TextDecoder().decode(data));
+    } else {
+      data = bytesFromB64(new TextDecoder().decode(data));
+    }
+  }
+  return new TextDecoder("utf-8").decode(data);
+}
+
+async function extractHTMLStub(code){
+  // Tìm _c = [...]
+  var m = code.match(/_c\s*=\s*(\[[^\]]+\])/);
+  if(!m) throw new Error("Không tìm thấy mảng base64.");
+  var arr = JSON.parse(m[1]);
+  var b64 = arr.join("");
+  var useDeflate = code.indexOf("DecompressionStream") >= 0;
+  var data = bytesFromB64(b64);
+  if(useDeflate) data = await inflateRaw(data);
+  return new TextDecoder("utf-8").decode(data);
+}
+
+async function extractJSStub(code){
+  // Tìm var _d = 'a'+'b'+...
+  var m = code.match(/var\s+_d\s*=\s*([\s\S]*?);\s*function\s+_b/);
+  if(!m) throw new Error("Không tìm thấy khối base64.");
+  var expr = m[1];
+  // lấy tất cả string trong '...'
+  var parts = [];
+  var re = /'([^']*)'/g, mm;
+  while((mm = re.exec(expr)) !== null) parts.push(mm[1]);
+  var b64 = parts.join("").replace(/\\\\/g,"\\").replace(/\\'/g,"'");
+  var useDeflate = code.indexOf("DecompressionStream") >= 0 || code.indexOf("inflateRawSync") >= 0;
+  var data = bytesFromB64(b64);
+  if(useDeflate) data = await inflateRaw(data);
+  return new TextDecoder("utf-8").decode(data);
+}
+
+async function extractLuaStub(code){
+  // Tìm chuỗi b64 trong local <vD> = "..."
+  // các chunk dạng "..." nối bằng ..\n
+  var m = code.match(/local\s+\S+\s*=\s*([\s\S]*?)\nlocal\s+\S+\s*=\s*\S+\(/) ;
+  if(!m){
+    // fallback: lấy tất cả "..."
+  }
+  // Cách chắc hơn: lấy tất cả chuỗi "..." giữa "local X = " và dòng có inflate/base64
+  var idxStart = code.search(/local\s+\S+\s*=\s*\(?\s*"/);
+  if(idxStart < 0) throw new Error("Không tìm thấy base64 Lua.");
+  var sub = code.slice(idxStart);
+  var parts = [];
+  var re = /"([A-Za-z0-9+/=]+)"/g, mm;
+  while((mm = re.exec(sub)) !== null) parts.push(mm[1]);
+  if(!parts.length) throw new Error("Không có chunk base64.");
+  var b64 = parts.join("");
+  var useDeflate = code.indexOf("inflate") >= 0 || code.indexOf("deflate") >= 0;
+  var data = bytesFromB64(b64);
+  if(useDeflate){
+    try{ data = await inflateRaw(data); }
+    catch(e){ throw new Error("Cần inflate thủ công (Lua) — payload vẫn là deflate."); }
+  }
+  return new TextDecoder("utf-8").decode(data);
+}
+
+async function deobfuscate(code){
+  var lang = detectLang(code);
+  if(lang === "python") return { lang: lang, code: await extractPythonStub(code) };
+  if(lang === "html")   return { lang: lang, code: await extractHTMLStub(code) };
+  if(lang === "js")     return { lang: lang, code: await extractJSStub(code) };
+  if(lang === "lua")    return { lang: lang, code: await extractLuaStub(code) };
+  throw new Error("Không nhận dạng được file obf.");
+}
+
+window.HuyPhamObf = {
+  obfuscate: obfuscate,
+  deobfuscate: deobfuscate,
+  detectLang: detectLang,
+  obfPython: obfPython, obfLua: obfLua, obfJS: obfJS, obfHTML: obfHTML
+};
+</script>
+
+<!-- ================= UI ================= -->
+<script>
+var $ = function(id){ return document.getElementById(id); };
+var currentLang = "python";
+var EXT = { python:"py", lua:"lua", js:"js", html:"html" };
+var lastResult = null;
+
+var PRESETS = {
+  balanced:{ layers:3, at:"off", ad:"off" },
+  compact:{ layers:1, at:"off", ad:"off" },
+  deep:{ layers:8, at:"off", ad:"off" },
+  unicode:{ layers:5, at:"off", ad:"off" },
+  paranoid:{ layers:10, at:"on", ad:"on" }
+};
+
+var SAMPLES = {
+  python:'def greet(name):\n    return f"Xin chao {name}!"\n\nif __name__ == "__main__":\n    print(greet("Huy Pham"))\n',
+  lua:'local function greet(name)\n  return "Xin chao " .. name .. "!"\nend\nprint(greet("Huy Pham"))\n',
+  js:'function greet(name){\n  return `Xin chao ${name}!`;\n}\nconsole.log(greet("Huy Pham"));\n',
+  html:'<!DOCTYPE html>\n<html>\n<head><meta charset="UTF-8"><title>Hi</title></head>\n<body>\n  <h1>Xin chao Huy Pham!</h1>\n  <p>Day la trang HTML mau.</p>\n</body>\n</html>\n'
+};
+
+/* ===== theme ===== */
+var theme = localStorage.getItem("hp-theme") || "dark";
+document.documentElement.setAttribute("data-theme", theme);
+$("themeBtn").textContent = theme === "dark" ? "🌙" : "☀️";
+$("themeBtn").addEventListener("click", function(){
+  theme = theme === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("hp-theme", theme);
+  $("themeBtn").textContent = theme === "dark" ? "🌙" : "☀️";
+});
+
+/* ===== tabs ===== */
+document.querySelectorAll("#tabs button").forEach(function(b){
+  b.addEventListener("click", function(){
+    document.querySelectorAll("#tabs button").forEach(function(x){ x.classList.remove("active"); });
+    document.querySelectorAll(".tabpane").forEach(function(p){ p.classList.remove("active"); });
+    b.classList.add("active");
+    $("pane-"+b.dataset.tab).classList.add("active");
+    if(b.dataset.tab === "hist") renderHist();
   });
-})();
+});
+
+/* ===== language ===== */
+document.querySelectorAll("#langs button").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    document.querySelectorAll("#langs button").forEach(function(x){ x.classList.remove("active"); });
+    btn.classList.add("active");
+    currentLang = btn.dataset.lang;
+  });
+});
+
+/* ===== samples ===== */
+document.querySelectorAll("#samples button").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var lang = btn.dataset.lang;
+    $("input").value = SAMPLES[lang];
+    currentLang = lang;
+    document.querySelectorAll("#langs button").forEach(function(x){
+      x.classList.toggle("active", x.dataset.lang === lang);
+    });
+  });
+});
+
+/* ===== presets ===== */
+document.querySelectorAll("#presets button").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    document.querySelectorAll("#presets button").forEach(function(x){ x.classList.remove("active"); });
+    btn.classList.add("active");
+    var p = PRESETS[btn.dataset.preset];
+    if(p){
+      $("layers").value = String(p.layers);
+      $("antiTamper").value = p.at;
+      $("antiDebug").value = p.ad;
+    }
+  });
+});
+
+/* ===== file load ===== */
+$("filein").addEventListener("change", function(e){
+  var f = e.target.files[0]; if(!f) return;
+  var rd = new FileReader();
+  rd.onload = function(){
+    $("input").value = rd.result;
+    var name = f.name.toLowerCase(), guess = null;
+    if(name.endsWith(".py")) guess = "python";
+    else if(name.endsWith(".lua")) guess = "lua";
+    else if(name.endsWith(".js")) guess = "js";
+    else if(name.endsWith(".html") || name.endsWith(".htm")) guess = "html";
+    if(guess){
+      currentLang = guess;
+      document.querySelectorAll("#langs button").forEach(function(x){
+        x.classList.toggle("active", x.dataset.lang === guess);
+      });
+    }
+  };
+  rd.readAsText(f, "utf-8");
+});
+
+/* ===== run ===== */
+async function runObf(){
+  var src = $("input").value;
+  var tb = $("tb");
+  if(!src.trim()){
+    tb.className = "msg err";
+    tb.textContent = "❌ Chưa có code!";
+    return;
+  }
+  tb.className = "msg";
+  tb.textContent = "⏳ Đang obfuscate (" + currentLang + ")...";
+  try{
+    var kq = await HuyPhamObf.obfuscate(src, currentLang, {
+      rounds: parseInt($("layers").value, 10) || 3,
+      pyVersion: $("pyver").value,
+      tag: $("tag").value.trim() || "Huy Pham",
+      expiry: $("expiry").value || null,
+      antiTamper: $("antiTamper").value === "on",
+      antiDebug: $("antiDebug").value
+    });
+    lastResult = kq;
+    $("output").value = kq.code;
+    tb.className = "msg ok";
+    tb.textContent = "✅ XONG! " + kq.lang.toUpperCase() +
+      " • " + kq.mode +
+      (kq.rounds ? " • " + kq.rounds + " lớp" : "") +
+      (kq.at ? " • AT: BẬT" : "") +
+      (kq.expiry ? " • HH: " + kq.expiry : "");
+    $("stat").textContent = "Kích thước: " + kq.sizeGoc.toLocaleString("vi-VN") +
+      " → " + kq.sizeObf.toLocaleString("vi-VN") + " ký tự (" +
+      Math.round(kq.sizeObf/kq.sizeGoc*100) + "%)";
+    showSizeBar(kq.sizeGoc, kq.sizeObf);
+    showInfo(kq);
+    saveHist(kq, src);
+  }catch(err){
+    tb.className = "msg err";
+    tb.textContent = "❌ Lỗi: " + (err && err.message ? err.message : err);
+  }
+}
+$("go").addEventListener("click", runObf);
+
+function showSizeBar(a,b){
+  var sb = $("sizebar"); sb.style.display = "block";
+  var total = a + b;
+  $("barG").style.width = (a/total*100)+"%";
+  $("barO").style.width = (b/total*100)+"%";
+}
+function showInfo(kq){
+  $("infoGrid").style.display = "grid";
+  $("ifLang").textContent = kq.lang;
+  $("ifMode").textContent = kq.mode;
+  $("ifRounds").textContent = kq.rounds || "—";
+  $("ifAT").textContent = kq.at ? "BẬT" : "TẮT";
+  $("ifExp").textContent = kq.expiry || "—";
+  $("ifHash").textContent = kq.hash ? kq.hash.slice(0,24)+"..." : "—";
+}
+
+/* ===== copy / download ===== */
+$("copy").addEventListener("click", function(){
+  if(!$("output").value) return;
+  navigator.clipboard.writeText($("output").value).then(function(){
+    $("tb").className = "msg ok"; $("tb").textContent = "📋 Đã sao chép!";
+  });
+});
+$("download").addEventListener("click", function(){
+  if(!$("output").value) return;
+  var ext = EXT[currentLang] || "txt";
+  var blob = new Blob([$("output").value], { type:"text/plain" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "HuyPham_Obf." + ext;
+  a.click(); URL.revokeObjectURL(a.href);
+});
+
+/* Tải HTML tự chứa — với mọi ngôn ngữ, output là 1 file HTML chạy được */
+$("dlSelf").addEventListener("click", function(){
+  if(!lastResult) return;
+  var out = lastResult.code;
+  var html;
+  if(lastResult.lang === "html"){
+    html = out;
+  } else {
+    // wrap thành HTML chạy code đó ở client
+    var langMap = { python:"python", lua:"lua", js:"javascript", };
+    var runner = {
+      python: "// Cần Python runtime — dùng Pyodide hoặc mở file .py bằng Python thật\n",
+      lua: "// Cần Lua runtime — dùng Fengari\n",
+      js: ""
+    }[lastResult.lang] || "";
+    // Cho JS: nhúng trực tiếp
+    if(lastResult.lang === "js"){
+      html = "<!DOCTYPE html>\n<html><head><meta charset=\"UTF-8\"><title>Huy Pham Obf Self</title></head>\n<body>\n<h3>Output console → F12</h3>\n<script>\n"+out+"\n</"+"script>\n</body></html>";
+    } else if(lastResult.lang === "python"){
+      // Dùng Pyodide CDN
+      html = "<!DOCTYPE html>\n<html><head><meta charset=\"UTF-8\"><title>Huy Pham Obf (Python)</title></head>\n<body>\n<h3>Chạy bằng Pyodide — mở F12 xem console</h3>\n<script src=\"https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js\"><\/script>\n<script>\n"+
+        "(async()=>{var p=await loadPyodide();p.setStdout({batched:s=>console.log(s)});p.setStderr({batched:s=>console.error(s)});\n"+
+        "var _src = "+JSON.stringify(out)+";\n"+
+        "await p.runPythonAsync(_src);})();\n</"+"script>\n</body></html>";
+    } else if(lastResult.lang === "lua"){
+      // Dùng Fengari
+      html = "<!DOCTYPE html>\n<html><head><meta charset=\"UTF-8\"><title>Huy Pham Obf (Lua)</title></head>\n<body>\n<h3>Chạy bằng Fengari — mở F12 xem console</h3>\n<script src=\"https://cdn.jsdelivr.net/npm/fengari-web@0.1.4/dist/fengari-web.js\"><\/script>\n"+
+        "<script type=\"application/lua\">\n"+out+"\n</"+"script>\n</body></html>";
+    } else {
+      html = out;
+    }
+  }
+  var blob = new Blob([html], { type:"text/html" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "HuyPham_Obf_SelfContained.html";
+  a.click(); URL.revokeObjectURL(a.href);
+});
+
+/* Copy Data URI */
+$("copyDataURI").addEventListener("click", function(){
+  if(!lastResult) return;
+  var out = lastResult.code, html;
+  if(lastResult.lang === "html"){ html = out; }
+  else if(lastResult.lang === "js"){
+    html = "<!DOCTYPE html>\n<html><head><meta charset=\"UTF-8\"></head>\n<body>\n<script>\n"+out+"\n</"+"script>\n</body></html>";
+  } else if(lastResult.lang === "python"){
+    html = "<!DOCTYPE html>\n<html><head><meta charset=\"UTF-8\"></head>\n<body>\n<script src=\"https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js\"><\/script>\n<script>\n(async()=>{var p=await loadPyodide();p.setStdout({batched:s=>document.body.innerHTML+='<pre>'+s+'</pre>'});var _s="+JSON.stringify(out)+";await p.runPythonAsync(_s);})();\n</"+"script>\n</body></html>";
+  } else {
+    html = "<!DOCTYPE html>\n<html><head><meta charset=\"UTF-8\"></head>\n<body>\n<script src=\"https://cdn.jsdelivr.net/npm/fengari-web@0.1.4/dist/fengari-web.js\"><\/script>\n<script type=\"application/lua\">\n"+out+"\n</"+"script>\n</body></html>";
+  }
+  var uri = "data:text/html;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(html)));
+  navigator.clipboard.writeText(uri).then(function(){
+    $("tb").className = "msg ok";
+    $("tb").textContent = "🔗 Đã copy Data URI — dán vào thanh địa chỉ browser là chạy!";
+  });
+});
+
+/* Copy Markdown link */
+$("copyMD").addEventListener("click", function(){
+  if(!lastResult) return;
+  var out = lastResult.code, html;
+  if(lastResult.lang === "html"){ html = out; }
+  else if(lastResult.lang === "js"){
+    html = "<!DOCTYPE html>\n<html><head><meta charset=\"UTF-8\"></head>\n<body>\n<script>\n"+out+"\n</"+"script>\n</body></html>";
+  } else if(lastResult.lang === "python"){
+    html = "<!DOCTYPE html>\n<html><head><meta charset=\"UTF-8\"></head>\n<body>\n<script src=\"https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js\"><\/script>\n<script>\n(async()=>{var p=await loadPyodide();var _s="+JSON.stringify(out)+";await p.runPythonAsync(_s);})();\n</"+"script>\n</body></html>";
+  } else {
+    html = "<!DOCTYPE html>\n<html><head><meta charset=\"UTF-8\"></head>\n<body>\n<script src=\"https://cdn.jsdelivr.net/npm/fengari-web@0.1.4/dist/fengari-web.js\"><\/script>\n<script type=\"application/lua\">\n"+out+"\n</"+"script>\n</body></html>";
+  }
+  var uri = "data:text/html;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(html)));
+  var md = "[▶️ Bấm để chạy (Huy Pham Obf)](" + uri + ")";
+  navigator.clipboard.writeText(md).then(function(){
+    $("tb").className = "msg ok";
+    $("tb").textContent = "📝 Đã copy Markdown link — dán vào README GitHub!";
+  });
+});
+
+/* Verify */
+$("verifyBtn").addEventListener("click", async function(){
+  if(!$("output").value){
+    $("tb").className = "msg warn";
+    $("tb").textContent = "⚠️ Chưa có output để verify.";
+    return;
+  }
+  try{
+    var kq = await HuyPhamObf.deobfuscate($("output").value);
+    $("tb").className = "msg ok";
+    $("tb").textContent = "🔎 Verify OK — decode được code gốc ("+kq.lang+").";
+  }catch(e){
+    $("tb").className = "msg err";
+    $("tb").textContent = "❌ Verify thất bại: " + e.message;
+  }
+});
+
+/* Clear */
+$("clear").addEventListener("click", function(){
+  $("input").value = ""; $("output").value = "";
+  $("tb").textContent = ""; $("stat").textContent = "";
+  $("filein").value = ""; $("expiry").value = "";
+  $("sizebar").style.display = "none";
+  $("infoGrid").style.display = "none";
+  lastResult = null;
+});
+
+/* ===== history ===== */
+function getHist(){
+  try{ return JSON.parse(localStorage.getItem("hp-hist")||"[]"); }
+  catch(e){ return []; }
+}
+function saveHist(kq, src){
+  var h = getHist();
+  h.unshift({
+    t: Date.now(),
+    lang: kq.lang,
+    mode: kq.mode,
+    rounds: kq.rounds,
+    at: kq.at,
+    expiry: kq.expiry,
+    code: kq.code.slice(0, 8000) + (kq.code.length>8000 ? "\n/* ...rút gọn... */" : "")
+  });
+  h = h.slice(0, 10);
+  try{ localStorage.setItem("hp-hist", JSON.stringify(h)); }catch(e){}
+}
+function renderHist(){
+  var list = $("histList"), h = getHist();
+  if(!h.length){ list.innerHTML = '<div style="color:var(--muted);font-size:12.5px;padding:8px">Chưa có lịch sử.</div>'; return; }
+  list.innerHTML = "";
+  h.forEach(function(item, idx){
+    var d = document.createElement("div");
+    d.className = "item";
+    var time = new Date(item.t).toLocaleString("vi-VN");
+    d.innerHTML = '<div><b>'+item.lang.toUpperCase()+'</b> <span class="meta">• '+item.mode+
+      (item.rounds?' • '+item.rounds+' lớp':'')+
+      (item.at?' • AT':'')+
+      (item.expiry?' • HH '+item.expiry:'')+
+      ' • '+time+'</span></div>';
+    var btns = document.createElement("div");
+    var bLoad = document.createElement("button");
+    bLoad.textContent = "Nạp vào OBF";
+    bLoad.addEventListener("click", function(){
+      $("output").value = item.code;
+      $("tb").className = "msg ok";
+      $("tb").textContent = "📂 Đã nạp từ lịch sử.";
+      document.querySelectorAll("#tabs button").forEach(function(x){ x.classList.remove("active"); });
+      document.querySelectorAll(".tabpane").forEach(function(p){ p.classList.remove("active"); });
+      document.querySelector('[data-tab="obf"]').classList.add("active");
+      $("pane-obf").classList.add("active");
+    });
+    btns.appendChild(bLoad);
+    d.appendChild(btns);
+    list.appendChild(d);
+  });
+}
+$("clearHist").addEventListener("click", function(){
+  localStorage.removeItem("hp-hist");
+  renderHist();
+});
+
+/* ===== deobf ===== */
+$("dfileBtn").addEventListener("click", function(){ $("dfile").click(); });
+$("dfile").addEventListener("change", function(e){
+  var f = e.target.files[0]; if(!f) return;
+  var rd = new FileReader();
+  rd.onload = function(){ $("din").value = rd.result; };
+  rd.readAsText(f, "utf-8");
+});
+$("dgo").addEventListener("click", async function(){
+  var code = $("din").value;
+  if(!code.trim()){
+    $("dtb").className = "msg err"; $("dtb").textContent = "❌ Chưa có nội dung.";
+    return;
+  }
+  $("dtb").className = "msg"; $("dtb").textContent = "⏳ Đang giải mã...";
+  try{
+    var kq = await HuyPhamObf.deobfuscate(code);
+    $("dout").value = kq.code;
+    $("dtb").className = "msg ok";
+    $("dtb").textContent = "✅ Giải mã OK — ngôn ngữ: " + kq.lang.toUpperCase();
+  }catch(e){
+    $("dtb").className = "msg err";
+    $("dtb").textContent = "❌ Lỗi: " + (e && e.message ? e.message : e);
+  }
+});
+$("dcopy").addEventListener("click", function(){
+  if(!$("dout").value) return;
+  navigator.clipboard.writeText($("dout").value).then(function(){
+    $("dtb").className = "msg ok"; $("dtb").textContent = "📋 Đã sao chép!";
+  });
+});
+$("ddownload").addEventListener("click", function(){
+  if(!$("dout").value) return;
+  var blob = new Blob([$("dout").value], { type:"text/plain" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "HuyPham_Deobf.txt";
+  a.click(); URL.revokeObjectURL(a.href);
+});
+
+/* ===== shortcuts ===== */
+document.addEventListener("keydown", function(e){
+  if((e.ctrlKey || e.metaKey) && e.key === "Enter"){
+    e.preventDefault();
+    if($("pane-obf").classList.contains("active")) runObf();
+    else if($("pane-deobf").classList.contains("active")) $("dgo").click();
+  }
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s"){
+    e.preventDefault();
+    if($("pane-obf").classList.contains("active")) $("download").click();
+    else if($("pane-deobf").classList.contains("active")) $("ddownload").click();
+  }
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k"){
+    e.preventDefault();
+    if($("pane-obf").classList.contains("active")) $("clear").click();
+    else if($("pane-deobf").classList.contains("active")){ $("din").value=""; $("dout").value=""; $("dtb").textContent=""; }
+  }
+});
 </script>
 </body>
 </html>
